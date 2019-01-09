@@ -1,0 +1,30 @@
+# Compiled class file
+*.class
+
+# Intellij project files
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Gradle
+!gradle-wrapper.jar
+.gradletasknamecache
+.gradle/
+build/
+bin/
+out/
+
+# Project generated
+.vertx/
+data/
+webroot/
