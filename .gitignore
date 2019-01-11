@@ -24,6 +24,9 @@ build/
 bin/
 out/
 
+# Project
+!libs/*
+
 # Project generated
 .vertx/
 data/
