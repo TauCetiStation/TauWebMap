@@ -14,7 +14,8 @@ class MainVerticle : AbstractVerticle() {
     private val logger = LoggerFactory.getLogger(MainVerticle::class.java)
 
     init {
-        File("data").mkdir()
+        File(DATA_FOLDER).mkdir()
+        File(TMP_FOLDER).mkdir()
     }
 
     override fun start(startFuture: Future<Void>) {
@@ -30,7 +31,8 @@ class MainVerticle : AbstractVerticle() {
 
         val verticlesList = listOf(
             initVerticle(ViewVerticle()),
-            initVerticle(MapGenerationVerticle(), true)
+            initVerticle(MapGenerationVerticle(), true),
+            initVerticle(RepositoryVerticle(), true)
         )
 
         logger.info("Deploying verticles...")
