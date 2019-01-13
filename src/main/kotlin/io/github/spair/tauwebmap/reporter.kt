@@ -1,4 +1,4 @@
-package io.github.spair.tauwebmap.util
+package io.github.spair.tauwebmap
 
 import io.vertx.core.AsyncResult
 import io.vertx.core.Future

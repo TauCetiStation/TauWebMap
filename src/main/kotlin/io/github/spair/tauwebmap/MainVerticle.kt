@@ -1,6 +1,5 @@
 package io.github.spair.tauwebmap
 
-import io.github.spair.tauwebmap.util.reporter
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Future
 import io.vertx.core.Verticle
@@ -24,14 +23,15 @@ class MainVerticle : AbstractVerticle() {
 
     private fun deployVerticles(future: Future<Void>) {
         fun initVerticle(verticle: Verticle, worker: Boolean = false): Future<Void> = Future.future<Void>().apply {
-            vertx.deployVerticle(verticle, DeploymentOptions().setWorker(worker), reporter(this) {
-                logger.info("Verticle '${verticle.javaClass.simpleName}' deployed")
-            })
+            vertx.deployVerticle(verticle, DeploymentOptions().setWorker(worker),
+                reporter(this) {
+                    logger.info("Verticle '${verticle.javaClass.simpleName}' deployed")
+                })
         }
 
         val verticlesList = listOf(
             initVerticle(ViewVerticle()),
-            initVerticle(MapGenerationVerticle(), true),
+            initVerticle(MapVerticle(), true),
             initVerticle(RepositoryVerticle(), true)
         )
 

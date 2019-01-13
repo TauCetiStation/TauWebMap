@@ -26,9 +26,10 @@ out/
 
 # Project
 !libs/*
+webroot/
+dist/
 
 # Project generated
 .vertx/
 data/
-webroot/
 tmp/

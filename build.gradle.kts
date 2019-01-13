@@ -1,11 +1,15 @@
+import com.eriwen.gradle.css.tasks.MinifyCssTask
+import com.eriwen.gradle.js.tasks.MinifyJsTask
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    id("com.github.johnrengelman.shadow") version "4.0.2"
-    id("org.jmailen.kotlinter") version "1.20.1"
     kotlin("jvm") version "1.3.11"
+    id("com.github.johnrengelman.shadow") version "4.0.2"
+    id("com.eriwen.gradle.js") version "2.14.1"
+    id("com.eriwen.gradle.css") version "2.14.0"
+    id("org.jmailen.kotlinter") version "1.20.1"
 }
 
 application {
@@ -25,8 +29,6 @@ dependencies {
     val vertxVersion = "3.6.2"
     implementation(group = "io.vertx", name = "vertx-core", version = vertxVersion)
     implementation(group = "io.vertx", name = "vertx-web", version = vertxVersion)
-    
-    implementation(group = "io.github.spair", name = "byond-dmm-util", version = "1.0.1")
 }
 
 tasks {
@@ -40,29 +42,40 @@ tasks {
             attributes["Main-Verticle"] = "io.github.spair.tauwebmap.MainVerticle"
             attributes["License"] = "MIT License"
             attributes["Version"] = archiveVersion.get()
-            attributes["Build-Jdk"] = "${System.getProperties()["java.version"]} (${System.getProperties()["java.vendor"]} ${System.getProperties()["java.vm.version"]})"
+            attributes["Build-Jdk"] =
+                    "${System.getProperties()["java.version"]} (${System.getProperties()["java.vendor"]} ${System.getProperties()["java.vm.version"]})"
         }
     }
 
     withType<Wrapper> {
         gradleVersion = "5.1"
     }
+
+    withType<MinifyJsTask> {
+        source = fileTree("$projectDir/src/main/ui/script.js")
+        setDest("$projectDir/src/main/ui/dist/script.min.js")
+    }
+
+    withType<MinifyCssTask> {
+        source = fileTree("$projectDir/src/main/ui/style.css")
+        setDest("$projectDir/src/main/ui/dist/style.min.css")
+    }
 }
 
-tasks["build"].dependsOn("copyUI")
+tasks["build"].dependsOn("buildUi")
 
-tasks.register("cleanUI", Delete::class.java) {
+tasks.register("cleanUi", Delete::class.java) {
     group = "build"
     description = "Deletes weberoot folder with generated content for UI."
 
-    delete("$projectDir/src/main/resources/webroot")
+    delete("$projectDir/src/main/resources/webroot", "$projectDir/src/main/ui/dist")
 }
 
-tasks.register("copyUI", Copy::class.java) {
+tasks.register("buildUi", Copy::class.java) {
     group = "build"
     description = "Copy generated content for UI to webroot folder."
     destinationDir = File("$projectDir/src/main/resources")
-    dependsOn("cleanUI")
+    dependsOn("cleanUi", "minifyJs", "minifyCss")
 
     val currentTimeStamp = System.currentTimeMillis()
 
@@ -77,12 +90,16 @@ tasks.register("copyUI", Copy::class.java) {
     from("$projectDir/src/main/ui/dist") {
         into("webroot/static")
     }
+
+    from("$projectDir/src/main/ui/space.png") {
+        into("webroot/static")
+    }
 }
 
 tasks.register("cleanProject", Delete::class.java) {
     group = "build"
     description = "Deletes the build directory and project generated files."
-    dependsOn("clean", "cleanUI")
+    dependsOn("clean", "cleanUi")
 
-    delete("$projectDir/out", "$projectDir/data", "$projectDir/tmp","$projectDir/.vertx")
+    delete("$projectDir/out", "$projectDir/data", "$projectDir/tmp", "$projectDir/.vertx")
 }
