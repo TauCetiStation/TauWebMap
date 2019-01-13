@@ -3,6 +3,7 @@ package io.github.spair.tauwebmap
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Handler
 import io.vertx.core.eventbus.Message
+import java.awt.Image
 import java.io.File
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
@@ -12,8 +13,10 @@ class MapVerticle : AbstractVerticle() {
 
     private val eventBus by lazy { vertx.eventBus() }
 
-    private val initZoomLevel = 3
-    private val scaleFactorList = listOf(8, 16, 32, 68) // Numbers that are divisible by 8160 without remainder
+    private val zoomFactors = mapOf(3 to 8, 4 to 16, 5 to 32) // Numbers that are divisible by 8160 without remainder
+    private val scaleFactors = mapOf(3 to 0.5, 4 to 0.8, 5 to 1.0)
+    private val scaleTypes = mapOf(3 to Image.SCALE_FAST, 4 to Image.SCALE_SMOOTH, 5 to 0)
+
     private val compressOptions = arrayOf("--ext=.png", "--force", "--strip", "--speed=1", "--nofs", "--posterize=2")
 
     init {
@@ -32,9 +35,9 @@ class MapVerticle : AbstractVerticle() {
             revisionMapsFolder.mkdir()
             val generatedImg = ImageIO.read(generateMapImage())
 
-            scaleFactorList.forEachIndexed { index, scaleFactor ->
-                val zoomFolder = File("${revisionMapsFolder.path}/${index + initZoomLevel}").apply { mkdir() }
-                createSubImages(generatedImg, zoomFolder.path, scaleFactor)
+            zoomFactors.forEach { zoom, zoomFactor ->
+                val zoomFolder = File("${revisionMapsFolder.path}/$zoom").apply { mkdir() }
+                createSubImages(generatedImg, zoomFolder.path, zoomFactor, scaleFactors[zoom]!!, scaleTypes[zoom]!!)
             }
 
             revisionMapsFolder.walk().maxDepth(1).forEach { zoomFolder ->
@@ -61,11 +64,25 @@ class MapVerticle : AbstractVerticle() {
 
     private fun compressImage(imagePath: String) = ProcessBuilder("pngquant", *compressOptions, imagePath).start()
 
-    private fun createSubImages(img: BufferedImage, zoomFolderPath: String, scaleFactor: Int) {
-        val imageSize = img.width / scaleFactor
-        for (x in 0 until scaleFactor) {
-            for (y in 0 until scaleFactor) {
-                img.getSubimage(x * imageSize, y * imageSize, imageSize, imageSize).run {
+    private fun createSubImages(img: BufferedImage, zoomFolderPath: String, zoomFactor: Int, scaleFactor: Double, scaleType: Int) {
+        val imageToCrop = if (scaleFactor != 1.0) {
+            val scaleSize = (img.width * scaleFactor).toInt()
+            val scaledImage = img.getScaledInstance(scaleSize, scaleSize, scaleType)
+
+            BufferedImage(scaleSize, scaleSize, BufferedImage.TYPE_INT_ARGB).apply {
+                createGraphics().run {
+                    drawImage(scaledImage, 0, 0, null)
+                    dispose()
+                }
+            }
+        } else {
+            img
+        }
+
+        val imageSize = imageToCrop.width / zoomFactor
+        for (x in 0 until zoomFactor) {
+            for (y in 0 until zoomFactor) {
+                imageToCrop.getSubimage(x * imageSize, y * imageSize, imageSize, imageSize).run {
                     if (!isBlankImage(this)) {
                         ImageIO.write(this, "png", File("$zoomFolderPath/$y-$x.png"))
                     }
