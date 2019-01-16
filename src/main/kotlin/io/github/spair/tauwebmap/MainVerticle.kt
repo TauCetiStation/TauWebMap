@@ -26,7 +26,8 @@ class MainVerticle : AbstractVerticle() {
             vertx.deployVerticle(verticle, DeploymentOptions().setWorker(worker),
                 reporter(this) {
                     logger.info("Verticle '${verticle.javaClass.simpleName}' deployed")
-                })
+                }
+            )
         }
 
         val verticlesList = listOf(

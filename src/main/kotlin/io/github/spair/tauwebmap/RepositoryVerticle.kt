@@ -1,37 +1,49 @@
 package io.github.spair.tauwebmap
 
 import io.vertx.core.AbstractVerticle
-import io.vertx.core.Future
 import io.vertx.core.logging.LoggerFactory
 import java.io.File
 import java.io.InputStreamReader
+import java.util.concurrent.TimeUnit
 
 class RepositoryVerticle : AbstractVerticle() {
 
     private val logger = LoggerFactory.getLogger(RepositoryVerticle::class.java)
+    private val eventBus by lazy { vertx.eventBus() }
 
-    override fun start(startFuture: Future<Void>) {
-        vertx.executeBlocking<String>({ future ->
+    override fun start() {
+        rebaseRepository()
+        logger.info("Repository synchronised")
+
+        eventBus.send<Void>(EB_MAP_REVISION_UPDATE, getMapRevision()) {
+            eventBus.send(EB_MAP_REVISION_HISTORY_CREATE, null)
+        }
+
+        vertx.setPeriodic(TimeUnit.HOURS.toMillis(24)) {
             rebaseRepository()
-            future.complete(getMapRevision())
-        }, {
-            if (it.succeeded()) {
-                startFuture.complete()
-                logger.info("Repository synchronised")
-                vertx.eventBus().send(EB_MAP_REV_UPD, it.result())
-            } else {
-                logger.error("Unable to synchronise repository")
-                startFuture.fail(it.cause())
-            }
-        })
+            eventBus.send(EB_MAP_REVISION_UPDATE, getMapRevision())
+        }
+
+        eventBus.localConsumer<String>(EB_REPO_CHECKOUT) {
+            checkoutTo(it.body())
+            it.reply(null)
+        }
     }
 
-    private fun rebaseRepository() = ProcessBuilder("git", "pull", "--rebase").directory(File(REPO_FOLDER)).start().waitFor()
+    private fun rebaseRepository() {
+        checkoutTo("master")
+        ProcessBuilder("git", "pull", "--rebase").startLocal()
+    }
+
+    private fun checkoutTo(commit: String) {
+        ProcessBuilder("git", "checkout", commit).startLocal()
+    }
 
     private fun getMapRevision(): String {
-        return ProcessBuilder("git", "log", "-1", "--pretty=format:\"%h\"", "maps/z1.dmm").directory(File(REPO_FOLDER)).start().let {
-            it.waitFor()
+        return ProcessBuilder("git", "log", "-1", "--pretty=format:%h", "maps/z1.dmm").startLocal().let {
             InputStreamReader(it.inputStream).use { s -> s.readText() }
         }
     }
+
+    private fun ProcessBuilder.startLocal() = directory(File(REPO_FOLDER)).start().apply { waitFor() }
 }
