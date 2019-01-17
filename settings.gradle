@@ -1,4 +1,5 @@
 rootProject.name = 'TauWebMap'
 include 'server'
 include 'cli'
+include 'ui'
 

@@ -1,0 +1,41 @@
+plugins {
+    id 'com.eriwen.gradle.js' version '2.14.1'
+    id 'com.eriwen.gradle.css' version '2.14.0'
+}
+
+minifyJs {
+    source = fileTree 'src/main/ui/script.js'
+    dest = file 'src/main/webroot/static/script.min.js'
+    closure {
+        compilerOptions.languageIn = 'ECMASCRIPT6_STRICT'
+        compilerOptions.languageOut = 'ECMASCRIPT5_STRICT'
+    }
+}
+
+minifyCss {
+    source = fileTree 'src/main/ui/style.css'
+    dest = file 'src/main/webroot/static/style.min.css'
+}
+
+task buildUi {
+    dependsOn 'cleanUi', 'copyAssets', 'copyIndex', 'minifyCss', 'minifyJs'
+}
+
+task copyAssets(type: Copy) {
+    from 'src/main/ui/space.png'
+    into 'src/main/webroot/static'
+}
+
+task copyIndex(type: Copy) {
+    def currentTimeStamp = System.currentTimeMillis()
+    from('src/main/ui/index.html') {
+        filter {
+            it.replace('@{version}', "${rootProject.version}-build:$currentTimeStamp")
+        }
+    }
+    into 'src/main/webroot'
+}
+
+task cleanUi(type: Delete) {
+    delete 'src/main/webroot'
+}
