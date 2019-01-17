@@ -37,7 +37,7 @@ tasks {
     }
 }
 
-tasks["jar"].dependsOn("copyUi")
+tasks["processResources"].dependsOn("copyUi")
 
 tasks.register("copyUi", Copy::class.java) {
     dependsOn(":ui:buildUi")
