@@ -1,19 +1,16 @@
 package io.github.spair.tauwebmap
 
 import io.vertx.core.AbstractVerticle
-import io.vertx.core.logging.LoggerFactory
 import java.io.File
 import java.io.InputStreamReader
 import java.util.concurrent.TimeUnit
 
 class RepositoryVerticle : AbstractVerticle() {
 
-    private val logger = LoggerFactory.getLogger(RepositoryVerticle::class.java)
     private val eventBus by lazy { vertx.eventBus() }
 
     override fun start() {
         rebaseRepository()
-        logger.info("Repository synchronised")
 
         eventBus.send<Void>(EB_MAP_REVISION_UPDATE, getMapRevision()) {
             eventBus.send(EB_MAP_REVISION_HISTORY_CREATE, null)

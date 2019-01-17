@@ -19,7 +19,7 @@ class MapVerticle : AbstractVerticle() {
         eventBus.localConsumer<String>(EB_MAP_REVISION_UPDATE) { msg ->
             val revision = msg.body()
 
-            if (currentRevision == null || revision != currentRevision) {
+            if (revision != currentRevision) {
                 logger.info("Generating images for revision $revision")
                 generateRevisionImages(CURRENT_MAP_FOLDER)
                 logger.info("Images generated")
@@ -38,10 +38,16 @@ class MapVerticle : AbstractVerticle() {
     private fun createHistoryRevisionImages(iterator: Iterator<String>) {
         if (iterator.hasNext()) {
             val revision = iterator.next().split(" ")[1]
-            eventBus.send<Void>(EB_REPO_CHECKOUT, revision) {
-                logger.info("Generating images for history revision $revision")
-                generateRevisionImages("$MAPS_FOLDER/$revision")
-                logger.info("History images generated")
+            val revisionMapsPath = "$MAPS_FOLDER/$revision"
+
+            if (!File(revisionMapsPath).exists()) {
+                eventBus.send<Void>(EB_REPO_CHECKOUT, revision) {
+                    logger.info("Generating images for history revision $revision")
+                    generateRevisionImages("$MAPS_FOLDER/$revision")
+                    logger.info("History images generated")
+                    createHistoryRevisionImages(iterator)
+                }
+            } else {
                 createHistoryRevisionImages(iterator)
             }
         }
