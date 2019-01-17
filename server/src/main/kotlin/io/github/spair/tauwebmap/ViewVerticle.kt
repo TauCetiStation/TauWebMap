@@ -41,7 +41,7 @@ class ViewVerticle : AbstractVerticle() {
                 val x = ctx.request().getParam("x")
 
                 with(ctx.response()) {
-                    putHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000, immutable")
+                    putHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=2592000")
 
                     val revisionFolderName = if (revision == currentRevision) CURRENT_FOLDER else revision
                     val tilePath = "$MAPS_FOLDER/$revisionFolderName/$zoom/$y-$x.png"
