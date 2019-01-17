@@ -51,8 +51,7 @@ tasks {
     }
 }
 
-
-tasks["build"].dependsOn("buildUi")
+tasks["jar"].dependsOn("buildUi")
 
 tasks.register("cleanUi", Delete::class.java) {
     group = "build"

@@ -21,6 +21,7 @@ public class Cli {
 
     private static final String DME_PATH = "tmp/repo/taucetistation.dme";
     private static final String DMM_PATH = "tmp/repo/maps/z1.dmm";
+
     private static final String[] IGNORE_TYPES = {"/turf/space", "/area", "/obj/effect/landmark"};
     private static final String[] COMPRESSION_ARGS = {"pngquant", "--ext=.png", "--force", "--strip", "--speed=1", "--nofs", "--posterize=2"};
 
@@ -55,6 +56,7 @@ public class Cli {
 
             File zoomFolder = new File(mapFolderPath + "/" + zoom);
             zoomFolder.mkdir();
+
             createSubImages(generatedImg, zoomFolder.getPath(), zoomFactor, scaleFactors.get(zoom));
         }
 
@@ -66,7 +68,7 @@ public class Cli {
                     try {
                         new ProcessBuilder(getCompressionArgs(imgFile.getPath())).start().waitFor();
                     } catch (InterruptedException | IOException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                 }
             }).start();

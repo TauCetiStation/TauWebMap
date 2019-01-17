@@ -6,10 +6,6 @@ plugins {
 sourceCompatibility = 1.8
 mainClassName = 'io.github.spair.tauwebmap.Cli'
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation group: 'io.github.spair', name: 'byond-dmm-util', version: '1.0.1'
 }
