@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
-public class Cli {
+public class Render {
 
     private static final String DME_PATH = "tmp/repo/taucetistation.dme";
     private static final String DMM_PATH = "tmp/repo/maps/z1.dmm";
@@ -43,7 +43,7 @@ public class Cli {
         }
     };
 
-    private Cli(String mapFolderPath) {
+    private Render(String mapFolderPath) {
         this.mapFolderPath = mapFolderPath;
     }
 
@@ -136,6 +136,6 @@ public class Cli {
     }
 
     public static void main(String[] args) throws Exception {
-        new Cli(args[0]).run();
+        new Render(args[0]).run();
     }
 }

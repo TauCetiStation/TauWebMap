@@ -49,6 +49,6 @@ class MapVerticle : AbstractVerticle() {
 
     private fun generateRevisionImages(mapFolderPath: String) {
         File(mapFolderPath).mkdirs()
-        ProcessBuilder("java", "-Xms1g", "-Xmx1g", "-jar", "cli.jar", mapFolderPath).start().waitFor()
+        ProcessBuilder("java", "-Xms1g", "-Xmx1g", "-jar", "render.jar", mapFolderPath).start().waitFor()
     }
 }
