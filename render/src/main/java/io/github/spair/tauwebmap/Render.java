@@ -88,7 +88,7 @@ public class Render {
 
         if (scaleFactor != 1.0) {
             int scaleSize = (int) (img.getWidth() * scaleFactor);
-            Image scaledImage = img.getScaledInstance(scaleSize, scaleSize, Image.SCALE_FAST);
+            Image scaledImage = img.getScaledInstance(scaleSize, scaleSize, Image.SCALE_SMOOTH);
             imageToCrop = new BufferedImage(scaleSize, scaleSize, BufferedImage.TYPE_INT_ARGB);
 
             Graphics g = imageToCrop.createGraphics();
