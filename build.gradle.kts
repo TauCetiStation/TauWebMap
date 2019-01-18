@@ -1,5 +1,5 @@
 group = "io.github.spair"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 subprojects {
     repositories {

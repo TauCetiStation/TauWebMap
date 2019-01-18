@@ -28,11 +28,7 @@ tasks {
     withType<ShadowJar> {
         archiveFileName.set("${rootProject.name}.jar")
         manifest {
-            attributes["Main-Verticle"] = "io.github.spair.tauwebmap.MainVerticle"
-            attributes["License"] = "MIT License"
-            attributes["Version"] = rootProject.version
-            attributes["Build-Jdk"] =
-                    "${System.getProperties()["java.version"]} (${System.getProperties()["java.vendor"]} ${System.getProperties()["java.vm.version"]})"
+            attributes("Main-Verticle" to "io.github.spair.tauwebmap.MainVerticle")
         }
     }
 }
