@@ -40,11 +40,15 @@ tasks {
 tasks["processResources"].dependsOn("copyUi")
 
 tasks.register("copyUi", Copy::class.java) {
+    group = "build"
+    description = "Copy UI files generated in :ui module to resources folder."
     dependsOn(":ui:buildUi")
     from("${project(":ui").projectDir}/src/main/webroot")
     into("src/main/resources/webroot")
 }
 
 tasks.register("cleanUi", Delete::class.java) {
+    group = "build"
+    description = "Deletes UI files from resources."
     delete("src/main/resources/webroot")
 }

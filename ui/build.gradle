@@ -18,15 +18,21 @@ minifyCss {
 }
 
 task buildUi {
+    group = 'build'
+    description = 'Agregates tasks to build UI files.'
     dependsOn 'cleanUi', 'copyAssets', 'copyIndex', 'minifyCss', 'minifyJs'
 }
 
 task copyAssets(type: Copy) {
+    group = 'build'
+    description = 'Copy static resources like images to "webroot/static" folder.'
     from 'src/main/ui/space.png'
     into 'src/main/webroot/static'
 }
 
 task copyIndex(type: Copy) {
+    group = 'build'
+    description = 'Copy index.html file to "webroot" folder with replacing of special tokens with proper data.'
     def currentTimeStamp = System.currentTimeMillis()
     from('src/main/ui/index.html') {
         filter {
@@ -37,5 +43,7 @@ task copyIndex(type: Copy) {
 }
 
 task cleanUi(type: Delete) {
+    group = 'build'
+    description = 'Clean up generated files.'
     delete 'src/main/webroot'
 }
