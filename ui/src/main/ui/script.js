@@ -1,6 +1,6 @@
 'use strict';
 
-const map = L.map('map', {
+let map = L.map('map', {
     zoomControl: false,
     attributionControl: false,
     minZoom: 3,
@@ -10,6 +10,7 @@ const map = L.map('map', {
 }).setView([-128, 128], 4);
 
 L.control.zoom({position: 'topleft'}).addTo(map);
+L.control.attribution({position: 'bottomright', prefix: '<a href="https://taucetistation.org/">TauCeti</a>'}).addAttribution('Made with ♥').addTo(map);
 
 fetch('/revision', {method: 'GET'}).then(response => {
     if (!response.ok)
