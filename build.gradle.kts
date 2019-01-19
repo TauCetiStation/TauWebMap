@@ -1,6 +1,16 @@
 group = "io.github.spair"
 version = "1.1-SNAPSHOT"
 
+plugins {
+    `build-scan`
+}
+
+buildScan {
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
+    publishAlwaysIf(System.getenv("CI") != null)
+}
+
 subprojects {
     repositories {
         jcenter()
