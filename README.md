@@ -3,6 +3,10 @@
 ## TauWebMap
 Автоматическая карта станции для билда https://github.com/TauCetiStation/TauCetiClassic
 
+### Файл ревизий
+Файл в корне проекта `.revisions`. Формат: `01.01.2000 012345678`, где сначала идёт дата (она будет видна польователю) и через пробел значение коммита.
+Первая строка будет картой которую увидит пользователь по умолчанию.
+
 ### Как собрать локально
 Так как необходимое окружение для работы карты собирается докером, необходимо сделать ряд действий чтобы запустить всё локально.
 
@@ -10,23 +14,24 @@
 
 (Все команды выполнять из корня проекта)
 1. `./gradlew build`
-2. Из папки `render/build/libs/` скопировать `render.jar` в корень
-3. Скачать и поместить в корень бинарник [pngquant](https://pngquant.org/)
-4. Создать папку `tmp/repo` и вызвать `git clone https://github.com/TauCetiStation/TauCetiClassic.git tmp/repo`
-5. `java -Xms32m -Xmx64m -jar server/build/libs/TauWebMap.jar`
+2. Скачать и поместить в корень бинарник [pngquant](https://pngquant.org/)
+3. Создать папку `tmp/repo` и вызвать `git clone https://github.com/TauCetiStation/TauCetiClassic.git tmp/repo`
+4. `java -Xms1g -Xmx1g -jar render/build/libs/render.jar`
+5. `java -Xms16m -Xmx32m -jar server/build/libs/TauWebMap.jar`
 
-После запуска сразу начнут генерироваться изображения карт. Они будут помещаться в `data/maps`. Полный процесс генерации занимает ~3 минуты.
 После запуска карта будет доступна по адресу `localhost:3000`.
 
 ### Как собрать докером
-1. `docker build -t webmap .`
-2. `docker run -p 3000:3000 webmap`
+1. `docker build -t tcstation/tauwebmap .`
+2. `docker run -d --rm -p 3000:3000 tcstation/tauwebmap`
+
+Чтобы запушить: `docker push tcstation/tauwebmap`
 
 ### Как запустить докером ничего не собирая
-`docker run -p 8080:3000 spair/tauwebmap`
+`docker run -d --rm -p 3000:3000 tcstation/tauwebmap`
 
 ### Структура
-* render - код непосредственно рендеринга и создания изображений для карт, который собирается в отдельный файл для дальнейшего запуска из под сервера
+* render - код непосредственно рендеринга и создания изображений для карт
 * server - сервер и основная точка запуска приложения
 * ui - скрипты / стили / index.html файлы во время основной сборки переносящийся под `server/resources/webroot`
 
