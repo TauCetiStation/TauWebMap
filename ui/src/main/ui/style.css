@@ -21,3 +21,8 @@ body {
     color: wheat;
     font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
 }
+
+.leaflet-control-layers-scrollbar {
+    overflow-y: hidden;
+    overflow-x: hidden;
+}

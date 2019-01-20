@@ -28,7 +28,7 @@ tasks {
     withType<ShadowJar> {
         archiveFileName.set("${rootProject.name}.jar")
         manifest {
-            attributes("Main-Verticle" to "io.github.spair.tauwebmap.MainVerticle")
+            attributes("Main-Verticle" to "io.github.spair.tauwebmap.ViewVerticle")
         }
     }
 }

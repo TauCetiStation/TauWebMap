@@ -10,32 +10,32 @@ let map = L.map('map', {
 }).setView([-128, 128], 4);
 
 L.control.zoom({position: 'topleft'}).addTo(map);
-L.control.attribution({position: 'bottomright', prefix: '<a href="https://taucetistation.org/">TauCeti</a>'}).addAttribution('Made with ♥').addTo(map);
+L.control.attribution({
+    position: 'bottomright',
+    prefix: '<a href="https://taucetistation.org/">TauCeti</a>'
+}).addAttribution('Made with ♥').addTo(map);
 
-fetch('/revision', {method: 'GET'}).then(response => {
+fetch('/revisions', {method: 'GET'}).then(response => {
     if (!response.ok)
-        throw Error('Unable to get map revision');
+        throw Error('Unable to get map revisions');
     return response.text();
-}).then(handleRevision).catch(reason => {
+}).then(handleRevisions).catch(reason => {
     console.log(reason);
     document.getElementById('revision-error').style.display = 'initial';
 });
 
-function handleRevision(currentRevision) {
-    console.log(`Current map revision: ${currentRevision}`);
+function handleRevisions(revisions) {
+    console.log(`Current map revisions:\n ${revisions}`);
 
-    fetch('/revision/history', {method: 'GET'}).then(response => response.text()).then(history => {
-        let baseLayer = createTileLayer(currentRevision);
-        let stations = {Current: baseLayer};
+    let stations = {};
 
-        history.split('\n').forEach(historyLine => {
-            let historyLineParams = historyLine.split(' ');
-            stations[historyLineParams[0]] = createTileLayer(historyLineParams[1]);
-        });
-
-        map.addLayer(baseLayer);
-        L.control.layers(stations).addTo(map);
+    revisions.split('\n').forEach(revisionLine => {
+        let revision = revisionLine.split(' ');
+        stations[revision[0]] = createTileLayer(revision[1]);
     });
+
+    map.addLayer(stations[Object.keys(stations)[0]]);
+    L.control.layers(stations).addTo(map);
 }
 
 function createTileLayer(id) {

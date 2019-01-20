@@ -14,18 +14,18 @@ import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.nio.file.Files;
 import java.util.List;
+import java.util.*;
 
 public class Render {
 
-    private static final String DME_PATH = "tmp/repo/taucetistation.dme";
-    private static final String DMM_PATH = "tmp/repo/maps/z1.dmm";
+    private static final String REPO_PATH = "tmp/repo";
+    private static final String DME_PATH = REPO_PATH + "/taucetistation.dme";
+    private static final String DMM_PATH = REPO_PATH + "/maps/z1.dmm";
 
     private static final String[] IGNORE_TYPES = {"/turf/space", "/area", "/obj/effect/landmark"};
     private static final String[] COMPRESSION_ARGS = {"pngquant", "--ext=.png", "--force", "--strip", "--speed=1", "--nofs", "--posterize=2"};
-
-    private final String mapFolderPath;
 
     // Numbers that are divisible by 8160 without remainder
     private Map<Integer, Integer> zoomFactors = new HashMap<Integer, Integer>() {
@@ -43,11 +43,22 @@ public class Render {
         }
     };
 
-    private Render(String mapFolderPath) {
-        this.mapFolderPath = mapFolderPath;
+    private void run() throws Exception {
+        File revisions = new File(".revisions");
+        Files.lines(revisions.toPath()).forEach(line -> {
+            String revision = line.split(" ")[1];
+            try {
+                new ProcessBuilder("git", "checkout", revision).directory(new File(REPO_PATH)).start().waitFor();
+                System.out.print("Rendering for " + revision + "...");
+                render("data/maps/" + revision);
+                System.out.println(" Done!");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
-    private void run() throws Exception {
+    private void render(String mapFolderPath) throws Exception {
         BufferedImage generatedImg = generateMapImage();
 
         for (Map.Entry<Integer, Integer> entry : zoomFactors.entrySet()) {
@@ -55,7 +66,7 @@ public class Render {
             Integer zoomFactor = entry.getValue();
 
             File zoomFolder = new File(mapFolderPath + "/" + zoom);
-            zoomFolder.mkdir();
+            zoomFolder.mkdirs();
 
             createSubImages(generatedImg, zoomFolder.getPath(), zoomFactor, scaleFactors.get(zoom));
         }
@@ -136,6 +147,6 @@ public class Render {
     }
 
     public static void main(String[] args) throws Exception {
-        new Render(args[0]).run();
+        new Render().run();
     }
 }

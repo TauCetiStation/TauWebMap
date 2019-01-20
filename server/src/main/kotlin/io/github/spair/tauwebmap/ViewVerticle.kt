@@ -1,37 +1,28 @@
 package io.github.spair.tauwebmap
 
 import io.vertx.core.AbstractVerticle
-import io.vertx.core.Future
-import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpHeaders
-import io.vertx.core.http.HttpServerResponse
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.FaviconHandler
 import io.vertx.ext.web.handler.StaticHandler
 import java.io.File
 import java.net.HttpURLConnection
 
+const val REVISIONS_FILE = ".revisions"
+const val MAPS_FOLDER = "data/maps"
+
 class ViewVerticle : AbstractVerticle() {
 
-    private var currentRevision: String? = null
-
-    override fun start(startFuture: Future<Void>) {
-        vertx.eventBus().localConsumer<String>(EB_VIEW_REVISION_UPDATE) { currentRevision = it.body() }
-
+    override fun start() {
         vertx.createHttpServer().requestHandler(Router.router(vertx).apply {
             route().handler(FaviconHandler.create())
             route().handler(StaticHandler.create())
 
-            get("/revision").handler { ctx ->
-                if (currentRevision == null) {
-                    ctx.response().setStatusCode(HttpURLConnection.HTTP_NOT_FOUND).end()
-                } else {
-                    ctx.response().infoTextHeaders().end(currentRevision)
-                }
-            }
-
-            get("/revision/history").handler { ctx ->
-                ctx.response().infoTextHeaders().end(Buffer.buffer(javaClass.classLoader.getResource(REVISION_HISTORY_FILE).readBytes()))
+            get("/revisions").handler { ctx ->
+                ctx.response()
+                    .putHeader(HttpHeaders.CACHE_CONTROL, "no-cache")
+                    .putHeader(HttpHeaders.CONTENT_TYPE, "text/plain")
+                    .sendFile(REVISIONS_FILE)
             }
 
             get("/tiles/:revision/:zoom/:y/:x").handler { ctx ->
@@ -43,8 +34,7 @@ class ViewVerticle : AbstractVerticle() {
                 with(ctx.response()) {
                     putHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=2592000")
 
-                    val revisionFolderName = if (revision == currentRevision) CURRENT_FOLDER else revision
-                    val tilePath = "$MAPS_FOLDER/$revisionFolderName/$zoom/$y-$x.png"
+                    val tilePath = "$MAPS_FOLDER/$revision/$zoom/$y-$x.png"
 
                     if (File(tilePath).exists()) {
                         sendFile(tilePath)
@@ -53,13 +43,6 @@ class ViewVerticle : AbstractVerticle() {
                     }
                 }
             }
-        }).listen(3000, reporter(startFuture))
-    }
-
-    private fun HttpServerResponse.infoTextHeaders(): HttpServerResponse {
-        return apply {
-            putHeader(HttpHeaders.CACHE_CONTROL, "no-cache")
-            putHeader(HttpHeaders.CONTENT_TYPE, "text/plain")
-        }
+        }).listen(3000)
     }
 }
