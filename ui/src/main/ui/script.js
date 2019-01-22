@@ -16,28 +16,16 @@ L.control.attribution({
 }).addAttribution('Made with ♥').addTo(map);
 
 fetch('/revisions', {method: 'GET'}).then(response => {
-    if (!response.ok)
-        throw Error('Unable to get map revisions');
     return response.text();
-}).then(handleRevisions).catch(reason => {
-    console.log(reason);
-    document.getElementById('revision-error').style.display = 'initial';
-});
-
-function handleRevisions(revisions) {
-    console.log(`Current map revisions:\n ${revisions}`);
+}).then(revisions => {
+    console.log(`Current map revisions:\n${revisions}`);
 
     let stations = {};
-
     revisions.split('\n').forEach(revisionLine => {
         let revision = revisionLine.split(' ');
-        stations[revision[0]] = createTileLayer(revision[1]);
+        stations[revision[0]] = L.tileLayer('/tiles/{id}/{z}/{y}/{x}', {id: revision[1], maxNativeZoom: 5, maxZoom: 6});
     });
 
     map.addLayer(stations[Object.keys(stations)[0]]);
     L.control.layers(stations).addTo(map);
-}
-
-function createTileLayer(id) {
-    return L.tileLayer('/tiles/{id}/{z}/{y}/{x}', {id: id, maxNativeZoom: 5, maxZoom: 6});
-}
+});

@@ -12,16 +12,6 @@ body {
     background: url("space.png");
 }
 
-#revision-error {
-    display: none;
-    width: 100%;
-    position: absolute;
-    z-index: 9999;
-    text-align: center;
-    color: wheat;
-    font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
-}
-
 .leaflet-control-layers-scrollbar {
     overflow-y: hidden;
     overflow-x: hidden;

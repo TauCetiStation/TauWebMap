@@ -20,6 +20,8 @@ import java.util.*;
 
 public class Render {
 
+    private static final String REVISIONS = ".revisions";
+
     private static final String REPO_PATH = "tmp/repo";
     private static final String DME_PATH = REPO_PATH + "/taucetistation.dme";
     private static final String DMM_PATH = REPO_PATH + "/maps/z1.dmm";
@@ -37,15 +39,14 @@ public class Render {
     };
     private Map<Integer, Double> scaleFactors = new HashMap<Integer, Double>() {
         {
-            put(3, 0.5);
-            put(4, 0.8);
+            put(3, 0.3);
+            put(4, 0.6);
             put(5, 1.0);
         }
     };
 
     private void run() throws Exception {
-        File revisions = new File(".revisions");
-        Files.lines(revisions.toPath()).forEach(line -> {
+        Files.lines(new File(REVISIONS).toPath()).forEach(line -> {
             String revision = line.split(" ")[1];
             try {
                 new ProcessBuilder("git", "checkout", revision).directory(new File(REPO_PATH)).start().waitFor();
