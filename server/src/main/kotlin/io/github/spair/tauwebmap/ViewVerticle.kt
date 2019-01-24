@@ -25,16 +25,17 @@ class ViewVerticle : AbstractVerticle() {
                     .sendFile(REVISIONS_FILE)
             }
 
-            get("/tiles/:revision/:zoom/:y/:x").handler { ctx ->
+            get("/tiles/:revision/:layer/:zoom/:y/:x").handler { ctx ->
                 val revision = ctx.request().getParam("revision")
                 val zoom = ctx.request().getParam("zoom")
+                val layer = ctx.request().getParam("layer")
                 val y = ctx.request().getParam("y")
                 val x = ctx.request().getParam("x")
 
                 with(ctx.response()) {
                     putHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=2592000")
 
-                    val tilePath = "$MAPS_FOLDER/$revision/$zoom/$y-$x.png"
+                    val tilePath = "$MAPS_FOLDER/$revision/$layer/$zoom/$y-$x.png"
 
                     if (File(tilePath).exists()) {
                         sendFile(tilePath)

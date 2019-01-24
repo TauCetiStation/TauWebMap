@@ -1,5 +1,16 @@
 'use strict';
 
+const OVERLAYS_DEF = [{
+    name: 'Pipes',
+    value: 'pipes'
+}, {
+    name: 'Power net',
+    value: 'power'
+}, {
+    name: 'Disposal',
+    value: 'dispo'
+}];
+
 let map = L.map('map', {
     zoomControl: false,
     attributionControl: false,
@@ -21,11 +32,41 @@ fetch('/revisions', {method: 'GET'}).then(response => {
     console.log(`Current map revisions:\n${revisions}`);
 
     let stations = {};
+    let overlays = {};
+
     revisions.split('\n').forEach(revisionLine => {
-        let revision = revisionLine.split(' ');
-        stations[revision[0]] = L.tileLayer('/tiles/{id}/{z}/{y}/{x}', {id: revision[1], maxNativeZoom: 5, maxZoom: 6});
+        let revArr = revisionLine.split(' ');
+        let date = revArr[0];
+        let revision = revArr[1];
+
+        stations[date] = createLayer(revision, 'tiles');
+        overlays[date] = {};
+
+        OVERLAYS_DEF.forEach(overlay => {
+            overlays[date][overlay.name] = createLayer(revision, overlay.value);
+        });
     });
 
-    map.addLayer(stations[Object.keys(stations)[0]]);
-    L.control.layers(stations).addTo(map);
+    let currentDate = Object.keys(stations)[0];
+
+    map.addLayer(stations[currentDate]);
+    let layerControl = L.control.layers(stations, overlays[currentDate]).addTo(map);
+
+    map.on('baselayerchange', function(e) {
+        let currentOverlay = overlays[currentDate];
+        Object.keys(currentOverlay).forEach(layerName => {
+            map.removeLayer(currentOverlay[layerName]);
+            layerControl.removeLayer(currentOverlay[layerName]);
+            layerControl.addOverlay(overlays[e.name][layerName], layerName);
+        });
+        currentDate = e.name;
+    });
 });
+
+function createLayer(id, name) {
+    return L.tileLayer(`/tiles/{id}/${name}/{z}/{y}/{x}?v=${window.VERSION}`, {
+        id: id,
+        maxNativeZoom: 5,
+        maxZoom: 6
+    })
+}

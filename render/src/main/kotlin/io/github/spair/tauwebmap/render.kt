@@ -5,10 +5,13 @@ import io.github.spair.byond.dmm.Dmm
 import io.github.spair.byond.dmm.drawer.DmmDrawer
 import io.github.spair.byond.dmm.drawer.FilterMode
 import io.github.spair.dmm.io.reader.DmmReader
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.awt.image.PixelGrabber
 import java.io.File
+import java.util.concurrent.atomic.AtomicInteger
 import javax.imageio.ImageIO
 
 private const val REVISIONS = ".revisions"
@@ -17,52 +20,82 @@ private const val REPO_PATH = "tmp/repo"
 private const val DME_PATH = "$REPO_PATH/taucetistation.dme"
 private const val DMM_PATH = "$REPO_PATH/maps/z1.dmm"
 
-private val IGNORE_TYPES = arrayOf("/turf/space", "/area", "/obj/effect/landmark")
-private val COMPRESSION_ARGS =
-    arrayOf("pngquant", "--ext=.png", "--force", "--strip", "--speed=1", "--nofs", "--posterize=2")
+private val LAYERS = arrayOf("tiles", "pipes", "power", "dispo")
+private val TYPES_TO_RENDER = mapOf(
+    "tiles" to arrayOf(), // All types except of IGNORE_TYPES.
+    "pipes" to arrayOf("/obj/machinery/atmospherics/pipe"),
+    "power" to arrayOf("/obj/structure/cable"),
+    "dispo" to arrayOf("/obj/structure/disposalpipe")
+)
 
-// Numbers that are divisible by 8160 without remainder
-private val zoomFactors = mapOf(3 to 8, 4 to 16, 5 to 32)
-private val scaleFactors = mapOf(3 to 0.3, 4 to 0.6, 5 to 1.0)
+private val IGNORE_TYPES = arrayOf("/turf/space", "/area", "/obj/effect/landmark")
+private val COMPRESSION_ARGS = arrayOf("--ext=.png", "--force", "--strip", "--speed=1", "--nofs", "--posterize=2")
+
+// All values calculated with assumption that map image size is 8160x8160
+private val ZOOM_FACTORS = mapOf(3 to 8, 4 to 16, 5 to 32)
+private val SCALE_FACTORS = mapOf(3 to 0.3, 4 to 0.6, 5 to 1.0)
+
+private val FILES_TO_COMPRESS = ArrayList<String>(4200)
+private val COMPRESS_FILE_COUNTER = AtomicInteger(0)
 
 fun main() {
     File(REVISIONS).forEachLine { line ->
-        val revision = line.split(" ".toRegex())[1]
+        val revision = line.split(" ")[1]
         ProcessBuilder("git", "checkout", revision).directory(File(REPO_PATH)).start().waitFor()
-        print("Rendering for $revision...")
-        render("data/maps/$revision")
-        println(" Done!")
+        renderRevision(revision)
+    }
+
+    COMPRESS_FILE_COUNTER.set(FILES_TO_COMPRESS.size)
+    FILES_TO_COMPRESS.forEach { path ->
+        GlobalScope.launch {
+            ProcessBuilder("pngquant", *COMPRESSION_ARGS, path).start().waitFor()
+            COMPRESS_FILE_COUNTER.decrementAndGet()
+        }
+    }
+
+    println("Compressing files, this may take several minutes")
+    while (COMPRESS_FILE_COUNTER.get() > 0) {
+        print("\r  - remains: $COMPRESS_FILE_COUNTER")
+    }
+    println("\rImages generation completed!")
+}
+
+private fun renderRevision(revision: String) {
+    println("Generating images for $revision:")
+    LAYERS.forEach { layer ->
+        print("  - $layer...")
+        renderLayer("data/maps/$revision/$layer", TYPES_TO_RENDER[layer]!!)
+        println(" OK!")
     }
 }
 
-private fun render(mapFolderPath: String) {
-    val generatedImg = generateMapImage()
+private fun renderLayer(layerFolderPath: String, typesToUse: Array<String>) {
+    val generatedImg = generateMapImage(typesToUse)
 
-    zoomFactors.forEach { zoom, zoomFactor ->
-        val zoomFolder = File("$mapFolderPath/$zoom")
-        zoomFolder.mkdirs()
-        createSubImages(generatedImg, zoomFolder.path, zoomFactor, scaleFactors[zoom]!!)
+    ZOOM_FACTORS.forEach { zoom, zoomFactor ->
+        val zoomFolder = File("$layerFolderPath/$zoom").apply { mkdirs() }
+        createSubImages(generatedImg, zoomFolder.path, zoomFactor, SCALE_FACTORS[zoom]!!)
     }
 
-    val mapFolder = File(mapFolderPath)
-
-    mapFolder.listFiles().forEach { zoomFolder ->
-        Thread {
-            zoomFolder.listFiles().forEach { imgFile ->
-                ProcessBuilder(*COMPRESSION_ARGS, imgFile.path).start().waitFor()
-            }
-        }.start()
+    File(layerFolderPath).listFiles().forEach { zoomFolder ->
+        zoomFolder.listFiles().forEach { imgFile ->
+            FILES_TO_COMPRESS.add(imgFile.path)
+        }
     }
 }
 
-private fun generateMapImage(): BufferedImage {
-    class Resource
-
+internal class Resource
+private fun generateMapImage(typesToUse: Array<String>): BufferedImage {
     val dme = DmeParser.parse(File(DME_PATH))
     dme.mergeWithJson(Resource::class.java.classLoader.getResourceAsStream("render_config.json"))
     val dmmData = DmmReader.readMap(File(DMM_PATH))
     val dmm = Dmm(dmmData, dme)
-    return DmmDrawer.drawMap(dmm, FilterMode.IGNORE, *IGNORE_TYPES)
+
+    return if (typesToUse.isEmpty()) {
+        DmmDrawer.drawMap(dmm, FilterMode.IGNORE, *IGNORE_TYPES)
+    } else {
+        DmmDrawer.drawMap(dmm, FilterMode.INCLUDE, *typesToUse)
+    }
 }
 
 private fun createSubImages(img: BufferedImage, zoomFolderPath: String, zoomFactor: Int, scaleFactor: Double) {
@@ -85,8 +118,7 @@ private fun createSubImages(img: BufferedImage, zoomFolderPath: String, zoomFact
         for (y in 0 until zoomFactor) {
             val subImg = imageToCrop.getSubimage(x * imageSize, y * imageSize, imageSize, imageSize)
             if (!isBlankImage(subImg)) {
-                val imgPath = String.format("%s/%s-%s.png", zoomFolderPath, y, x)
-                ImageIO.write(subImg, "png", File(imgPath))
+                ImageIO.write(subImg, "png", File("$zoomFolderPath/$y-$x.png"))
             }
         }
     }

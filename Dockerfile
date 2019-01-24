@@ -13,7 +13,7 @@ RUN apk update && \
 apk add git pngquant && \
 mkdir -p tmp/repo && \
 git clone --progress https://github.com/TauCetiStation/TauCetiClassic.git tmp/repo && \
-java -Xms1g -Xmx1g -jar render.jar
+java -jar render.jar
 
 FROM openjdk:8-jre-alpine
 WORKDIR /usr/tauwebmap
