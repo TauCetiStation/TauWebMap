@@ -26,9 +26,7 @@ L.control.attribution({
     prefix: '<a href="https://taucetistation.org/">TauCeti</a>'
 }).addAttribution('Made with ♥').addTo(map);
 
-fetch('/revisions', {method: 'GET'}).then(response => {
-    return response.text();
-}).then(revisions => {
+fetch('/revisions', {method: 'GET'}).then(response => response.text()).then(revisions => {
     console.log(`Current map revisions:\n${revisions}`);
 
     let stations = {};
@@ -52,7 +50,7 @@ fetch('/revisions', {method: 'GET'}).then(response => {
     map.addLayer(stations[currentDate]);
     let layerControl = L.control.layers(stations, overlays[currentDate]).addTo(map);
 
-    map.on('baselayerchange', function(e) {
+    map.on('baselayerchange', function (e) {
         let currentOverlay = overlays[currentDate];
         Object.keys(currentOverlay).forEach(layerName => {
             map.removeLayer(currentOverlay[layerName]);

@@ -9,27 +9,20 @@ plugins {
 }
 
 application {
-    mainClassName = "io.vertx.core.Launcher"
+    mainClassName = "io.github.spair.tauwebmap.ServerKt"
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
-    val vertxVersion = "3.6.2"
-    implementation(group = "io.vertx", name = "vertx-core", version = vertxVersion)
-    implementation(group = "io.vertx", name = "vertx-web", version = vertxVersion)
+    val http4kVersion = "3.107.0"
+    implementation(group = "org.http4k", name = "http4k-core", version = http4kVersion)
+    implementation(group = "org.http4k", name = "http4k-server-netty", version = http4kVersion)
 }
 
 tasks {
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"
-    }
-
-    withType<ShadowJar> {
-        archiveFileName.set("${rootProject.name}.jar")
-        manifest {
-            attributes("Main-Verticle" to "io.github.spair.tauwebmap.ViewVerticle")
-        }
     }
 }
 

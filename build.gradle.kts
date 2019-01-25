@@ -29,5 +29,5 @@ tasks.register("cleanProject", Delete::class.java) {
     description = "Deletes the build directory and project generated files."
     dependsOn(":server:clean", ":server:cleanUi", ":render:clean", ":ui:cleanUi")
 
-    delete("$projectDir/build", "$projectDir/out", "$projectDir/data", "$projectDir/tmp", "$projectDir/.vertx")
+    delete("$projectDir/build", "$projectDir/out", "$projectDir/data", "$projectDir/tmp")
 }

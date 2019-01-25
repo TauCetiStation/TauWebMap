@@ -26,7 +26,7 @@ task buildUi {
 task copyAssets(type: Copy) {
     group = 'build'
     description = 'Copy static resources like images to "webroot/static" folder.'
-    from 'src/main/ui/space.png'
+    from 'src/main/ui/space.png', 'src/main/ui/favicon.ico'
     into 'src/main/webroot/static'
 }
 

@@ -18,7 +18,7 @@ java -jar render.jar
 FROM openjdk:8-jre-alpine
 WORKDIR /usr/tauwebmap
 
-ENV WEB_MAP TauWebMap.jar
+ENV WEB_MAP server.jar
 
 COPY --from=build /tools/server/build/libs/$WEB_MAP .
 COPY --from=render /render/data data/
