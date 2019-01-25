@@ -52,11 +52,18 @@ fetch('/revisions', {method: 'GET'}).then(response => response.text()).then(revi
 
     map.on('baselayerchange', function (e) {
         let currentOverlay = overlays[currentDate];
-        Object.keys(currentOverlay).forEach(layerName => {
+
+        for (const layerName in currentOverlay) {
             map.removeLayer(currentOverlay[layerName]);
             layerControl.removeLayer(currentOverlay[layerName]);
             layerControl.addOverlay(overlays[e.name][layerName], layerName);
+        }
+
+        document.getElementsByName('leaflet-base-layers').forEach(el => {
+            // Workaround for weird bug. When we change base layer, radiobutton, even if in markup it's checked, remains unselected.
+            if (el.checked) setTimeout(() => el.click());
         });
+
         currentDate = e.name;
     });
 });

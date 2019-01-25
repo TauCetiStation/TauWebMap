@@ -30,6 +30,5 @@ webroot/
 dist/
 
 # Project generated
-.vertx/
 data/
 tmp/

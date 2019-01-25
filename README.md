@@ -17,7 +17,7 @@
 2. Скачать и поместить в корень бинарник [pngquant](https://pngquant.org/)
 3. Создать папку `tmp/repo` и вызвать `git clone https://github.com/TauCetiStation/TauCetiClassic.git tmp/repo`
 4. `java -jar render/build/libs/render.jar`
-5. `java -Xms16m -Xmx32m -jar server/build/libs/TauWebMap.jar`
+5. `java -Xms16m -Xmx32m -jar server/build/libs/server.jar`
 
 После запуска карта будет доступна по адресу `localhost:3000`.
 
