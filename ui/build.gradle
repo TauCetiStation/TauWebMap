@@ -5,7 +5,7 @@ plugins {
 
 minifyJs {
     source = fileTree 'src/main/ui/script.js'
-    dest = file 'src/main/webroot/static/script.min.js'
+    dest = file 'src/main/dist/webroot/static/script.min.js'
     closure {
         compilerOptions.languageIn = 'ECMASCRIPT6_STRICT'
         compilerOptions.languageOut = 'ECMASCRIPT5_STRICT'
@@ -14,7 +14,7 @@ minifyJs {
 
 minifyCss {
     source = fileTree 'src/main/ui/style.css'
-    dest = file 'src/main/webroot/static/style.min.css'
+    dest = file 'src/main/dist/style.min.css'
 }
 
 task buildUi {
@@ -25,14 +25,15 @@ task buildUi {
 
 task copyAssets(type: Copy) {
     group = 'build'
-    description = 'Copy static resources like images to "webroot/static" folder.'
+    description = 'Copy static resources like images to "dist/webroot/static" folder.'
     from 'src/main/ui/space.png', 'src/main/ui/favicon.ico'
-    into 'src/main/webroot/static'
+    into 'src/main/dist/webroot/static'
 }
 
 task copyIndex(type: Copy) {
     group = 'build'
-    description = 'Copy index.html file to "webroot" folder with replacing of special tokens with proper data.'
+    description = 'Copy index.html file to "dist/webroot" folder with replacing of special tokens with proper data.'
+    dependsOn 'minifyCss'
     def currentTimeStamp = System.currentTimeMillis()
     from('src/main/ui/index.html') {
         filter {
@@ -41,12 +42,15 @@ task copyIndex(type: Copy) {
         filter {
             it.replace('@{revisions}', file("../.revisions").text.replaceAll('\n', ','))
         }
+        filter {
+            it.replace('@{style}', file('src/main/dist/style.min.css').text)
+        }
     }
-    into 'src/main/webroot'
+    into 'src/main/dist/webroot'
 }
 
 task cleanUi(type: Delete) {
     group = 'build'
     description = 'Clean up generated files.'
-    delete 'src/main/webroot'
+    delete 'src/main/dist'
 }

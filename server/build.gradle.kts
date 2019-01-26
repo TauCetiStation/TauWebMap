@@ -34,7 +34,7 @@ tasks.register("copyUi", Copy::class.java) {
     group = "build"
     description = "Copy UI files generated in :ui module to resources folder."
     dependsOn(":ui:buildUi")
-    from("${project(":ui").projectDir}/src/main/webroot")
+    from("${project(":ui").projectDir}/src/main/dist/webroot")
     into("src/main/resources/webroot")
 }
 

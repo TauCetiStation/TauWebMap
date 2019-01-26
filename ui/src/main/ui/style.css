@@ -4,15 +4,11 @@ body {
     background: black;
 }
 
-#map {
-    width: 100vw;
-    height: 100vh;
-    padding: 0;
-    margin: 0;
-    background: url("space.png");
+html, body, #map {
+    height: 100%;
+    width: 100%;
 }
 
-.leaflet-control-layers-scrollbar {
-    overflow-y: hidden;
-    overflow-x: hidden;
+#map {
+    background: url("static/space.png");
 }
