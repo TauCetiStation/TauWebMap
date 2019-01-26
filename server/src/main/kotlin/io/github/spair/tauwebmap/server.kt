@@ -21,8 +21,6 @@ import java.time.Clock
 import java.time.Duration
 import java.util.Date
 
-const val MAPS_FOLDER = "data/maps"
-
 val YEAR_DURATION = Duration.ofDays(365)!!
 val MOTH_DURATION = Duration.ofDays(30)!!
 val WEEK_DURATION = Duration.ofDays(7)!!
@@ -40,7 +38,7 @@ fun main() {
             val y = req.path("y")
             val x = req.path("x")
 
-            val tilePath = "$MAPS_FOLDER/$revision/$layer/$zoom/$y-$x.png"
+            val tilePath = "data/maps/$revision/$layer/$zoom/$y-$x.png"
             val tileImg = File(tilePath)
 
             if (tileImg.exists()) {

@@ -14,10 +14,12 @@
 
 (Все команды выполнять из корня проекта)
 1. `./gradlew build`
-2. Скачать и поместить в корень бинарник [pngquant](https://pngquant.org/)
-3. Создать папку `tmp/repo` и вызвать `git clone https://github.com/TauCetiStation/TauCetiClassic.git tmp/repo`
-4. `java -jar render/build/libs/render.jar`
-5. `java -Xms16m -Xmx32m -jar server/build/libs/server.jar`
+2. Создать папку `tmp/repo` и вызвать `git clone https://github.com/TauCetiStation/TauCetiClassic.git tmp/repo`
+3. `java -jar render/build/libs/render.jar`
+    - (Опицонально) `./render/src/main/compress.sh`<br>
+    Эта команда инциирует сжатие всех изобржаений, которое уменьшит финальный размер папки в ~3 раза.
+    Для выполнения нужно чтобы `pngquant` команда была доступна для вызова (прописана в PATH).
+4. `java -Xms16m -Xmx32m -jar server/build/libs/server.jar`
 
 После запуска карта будет доступна по адресу `localhost:3000`.
 
