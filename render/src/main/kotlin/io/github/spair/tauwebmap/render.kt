@@ -64,7 +64,7 @@ private fun renderRevision(revision: String) {
     println("Generating images for $revision:")
     LAYERS.forEach { layer ->
         print("  - $layer...")
-        renderLayer("data/maps/$revision/$layer", TYPES_TO_RENDER[layer]!!)
+        renderLayer("data/maps/$revision/$layer", TYPES_TO_RENDER.getValue(layer))
         println(" OK!")
     }
 }
@@ -74,7 +74,7 @@ private fun renderLayer(layerFolderPath: String, typesToUse: Array<String>) {
 
     ZOOM_FACTORS.forEach { zoom, zoomFactor ->
         val zoomFolder = File("$layerFolderPath/$zoom").apply { mkdirs() }
-        createSubImages(generatedImg, zoomFolder.path, zoomFactor, SCALE_FACTORS[zoom]!!)
+        createSubImages(generatedImg, zoomFolder.path, zoomFactor, SCALE_FACTORS.getValue(zoom))
     }
 
     File(layerFolderPath).listFiles().forEach { zoomFolder ->

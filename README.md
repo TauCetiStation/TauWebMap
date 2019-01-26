@@ -23,12 +23,12 @@
 
 ### Как собрать докером
 1. `docker build -t tcstation/tauwebmap .`
-2. `docker run -d --rm -p 3000:3000 tcstation/tauwebmap`
+2. `docker run -d -m 50m --rm -p 3000:3000 tcstation/tauwebmap`
 
 Чтобы запушить: `docker push tcstation/tauwebmap`
 
 ### Как запустить докером ничего не собирая
-`docker run -d --rm -p 3000:3000 tcstation/tauwebmap`
+`docker run -d -m 50m --rm -p 3000:3000 tcstation/tauwebmap`
 
 ### Структура
 * render - код непосредственно рендеринга и создания изображений для карт

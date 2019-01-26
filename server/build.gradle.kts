@@ -18,6 +18,8 @@ dependencies {
     val http4kVersion = "3.107.0"
     implementation(group = "org.http4k", name = "http4k-core", version = http4kVersion)
     implementation(group = "org.http4k", name = "http4k-server-netty", version = http4kVersion)
+
+    compileOnly(group = "com.oracle.substratevm", name = "svm", version = "1.0.0-rc11")
 }
 
 tasks {
