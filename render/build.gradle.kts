@@ -13,7 +13,6 @@ application {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.1.1")
     implementation(group = "io.github.spair", name = "byond-dmm-util", version = "1.0.1")
 }
 

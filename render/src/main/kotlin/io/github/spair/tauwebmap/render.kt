@@ -5,13 +5,10 @@ import io.github.spair.byond.dmm.Dmm
 import io.github.spair.byond.dmm.drawer.DmmDrawer
 import io.github.spair.byond.dmm.drawer.FilterMode
 import io.github.spair.dmm.io.reader.DmmReader
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.awt.image.PixelGrabber
 import java.io.File
-import java.util.concurrent.atomic.AtomicInteger
 import javax.imageio.ImageIO
 
 private const val REVISIONS = ".revisions"
@@ -29,14 +26,10 @@ private val TYPES_TO_RENDER = mapOf(
 )
 
 private val IGNORE_TYPES = arrayOf("/turf/space", "/area", "/obj/effect/landmark")
-private val COMPRESSION_ARGS = arrayOf("--ext=.png", "--force", "--strip", "--speed=1", "--nofs", "--posterize=2")
 
 // All values calculated with assumption that map image size is 8160x8160
 private val ZOOM_FACTORS = mapOf(3 to 8, 4 to 16, 5 to 32)
 private val SCALE_FACTORS = mapOf(3 to 0.3, 4 to 0.6, 5 to 1.0)
-
-private val FILES_TO_COMPRESS = ArrayList<String>(4200)
-private val COMPRESS_FILE_COUNTER = AtomicInteger(0)
 
 fun main() {
     File(REVISIONS).forEachLine { line ->
@@ -44,20 +37,6 @@ fun main() {
         ProcessBuilder("git", "checkout", revision).directory(File(REPO_PATH)).start().waitFor()
         renderRevision(revision)
     }
-
-    COMPRESS_FILE_COUNTER.set(FILES_TO_COMPRESS.size)
-    FILES_TO_COMPRESS.forEach { path ->
-        GlobalScope.launch {
-            ProcessBuilder("pngquant", *COMPRESSION_ARGS, path).start().waitFor()
-            COMPRESS_FILE_COUNTER.decrementAndGet()
-        }
-    }
-
-    println("Compressing files, this may take several minutes")
-    while (COMPRESS_FILE_COUNTER.get() > 0) {
-        print("\r  - remains: $COMPRESS_FILE_COUNTER")
-    }
-    println("\rImages generation completed!")
 }
 
 private fun renderRevision(revision: String) {
@@ -75,12 +54,6 @@ private fun renderLayer(layerFolderPath: String, typesToUse: Array<String>) {
     ZOOM_FACTORS.forEach { zoom, zoomFactor ->
         val zoomFolder = File("$layerFolderPath/$zoom").apply { mkdirs() }
         createSubImages(generatedImg, zoomFolder.path, zoomFactor, SCALE_FACTORS.getValue(zoom))
-    }
-
-    File(layerFolderPath).listFiles().forEach { zoomFolder ->
-        zoomFolder.listFiles().forEach { imgFile ->
-            FILES_TO_COMPRESS.add(imgFile.path)
-        }
     }
 }
 
