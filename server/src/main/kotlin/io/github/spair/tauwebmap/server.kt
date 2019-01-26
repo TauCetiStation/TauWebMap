@@ -3,7 +3,6 @@ package io.github.spair.tauwebmap
 import io.netty.handler.codec.http.HttpHeaderNames
 import org.http4k.core.Response
 import org.http4k.core.ContentType
-import org.http4k.core.noCache
 import org.http4k.core.maxAge
 import org.http4k.core.Method.GET
 import org.http4k.core.Status.Companion.NO_CONTENT
@@ -22,7 +21,6 @@ import java.time.Clock
 import java.time.Duration
 import java.util.Date
 
-const val REVISIONS_FILE = ".revisions"
 const val MAPS_FOLDER = "data/maps"
 
 val YEAR_DURATION = Duration.ofDays(365)!!
@@ -35,9 +33,6 @@ fun main() {
             Response(OK).contentType(ContentType.TEXT_HTML).body(Classpath("/webroot").load("index.html")!!.openStream())
         },
         "/static" bind static(Classpath("/webroot/static")).withFilter(CacheMaxAge(Clock.systemUTC(), YEAR_DURATION)),
-        "/revisions" bind GET to {
-            Response(OK).noCache().contentType(ContentType.TEXT_PLAIN).body(File(REVISIONS_FILE).inputStream())
-        },
         "/tiles/{revision}/{layer}/{zoom}/{y}/{x}" bind GET to { req ->
             val revision = req.path("revision")
             val layer = req.path("layer")

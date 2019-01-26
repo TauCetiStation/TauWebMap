@@ -38,6 +38,9 @@ task copyIndex(type: Copy) {
         filter {
             it.replace('@{version}', "${rootProject.version}-build:$currentTimeStamp")
         }
+        filter {
+            it.replace('@{revisions}', file("../.revisions").text.replaceAll('\n', ','))
+        }
     }
     into 'src/main/webroot'
 }

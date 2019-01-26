@@ -26,46 +26,47 @@ L.control.attribution({
     prefix: '<a href="https://taucetistation.org/">TauCeti</a>'
 }).addAttribution('Made with ♥').addTo(map);
 
-fetch('/revisions', {method: 'GET'}).then(response => response.text()).then(revisions => {
-    console.log(`Current map revisions:\n${revisions}`);
+let stations = {};
+let overlays = {};
 
-    let stations = {};
-    let overlays = {};
+window.REVISIONS.split(',').forEach(revisionLine => {
+    let revArr = revisionLine.split(' ');
+    let date = revArr[0];
+    let revision = revArr[1];
 
-    revisions.split('\n').forEach(revisionLine => {
-        let revArr = revisionLine.split(' ');
-        let date = revArr[0];
-        let revision = revArr[1];
+    stations[date] = createLayer(revision, 'tiles');
+    overlays[date] = {};
 
-        stations[date] = createLayer(revision, 'tiles');
-        overlays[date] = {};
-
-        OVERLAYS_DEF.forEach(overlay => {
-            overlays[date][overlay.name] = createLayer(revision, overlay.value);
-        });
+    OVERLAYS_DEF.forEach(overlay => {
+        overlays[date][overlay.name] = createLayer(revision, overlay.value);
     });
+});
 
-    let currentDate = Object.keys(stations)[0];
+let currentDate = Object.keys(stations)[0];
 
-    map.addLayer(stations[currentDate]);
-    let layerControl = L.control.layers(stations, overlays[currentDate]).addTo(map);
+map.addLayer(stations[currentDate]);
+let layerControl = L.control.layers(stations, overlays[currentDate]).addTo(map);
 
-    map.on('baselayerchange', function (e) {
-        let currentOverlay = overlays[currentDate];
+map.on('baselayerchange', e => {
+    let currentOverlay = overlays[currentDate];
+    let nextOverlay = overlays[e.name];
 
-        for (const layerName in currentOverlay) {
-            map.removeLayer(currentOverlay[layerName]);
-            layerControl.removeLayer(currentOverlay[layerName]);
-            layerControl.addOverlay(overlays[e.name][layerName], layerName);
+    for (const layerName in currentOverlay) {
+        if (map.hasLayer(currentOverlay[layerName])) {
+            map.addLayer(nextOverlay[layerName]);
         }
 
-        document.getElementsByName('leaflet-base-layers').forEach(el => {
-            // Workaround for weird bug. When we change base layer, radiobutton, even if in markup it's checked, remains unselected.
-            if (el.checked) setTimeout(() => el.click());
-        });
+        map.removeLayer(currentOverlay[layerName]);
+        layerControl.removeLayer(currentOverlay[layerName]);
+        layerControl.addOverlay(nextOverlay[layerName], layerName);
+    }
 
-        currentDate = e.name;
+    document.getElementsByName('leaflet-base-layers').forEach(el => {
+        // Workaround for weird bug. When we change base layer, radiobutton, even if in markup it's checked, remains unselected.
+        if (el.checked) setTimeout(() => el.click());
     });
+
+    currentDate = e.name;
 });
 
 function createLayer(id, name) {
