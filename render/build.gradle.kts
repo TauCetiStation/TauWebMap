@@ -14,6 +14,7 @@ application {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(group = "io.github.spair", name = "byond-dmm-util", version = "1.0.1")
+    implementation(group = "com.eclipsesource.minimal-json", name = "minimal-json", version = "0.9.5")
 }
 
 tasks {

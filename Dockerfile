@@ -9,14 +9,13 @@ WORKDIR /render
 COPY --from=build /build/render/build/libs/render.jar .
 COPY .revisions .
 COPY render/src/main/compress.sh .
-RUN chmod +x compress.sh
 
 RUN apk update && \
 apk add git pngquant && \
 mkdir -p tmp/repo && \
 git clone --progress https://github.com/TauCetiStation/TauCetiClassic.git tmp/repo && \
 java -Xms1g -Xmx1g -jar render.jar && \
-./compress.sh
+chmod +x compress.sh && ./compress.sh
 
 FROM oracle/graalvm-ce:1.0.0-rc11 as native
 WORKDIR /native

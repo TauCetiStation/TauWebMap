@@ -1,0 +1,16 @@
+{
+  ">=": [
+    {
+      "revision": "887f80dff",
+      "render": [
+        "common_render.json"
+      ]
+    },
+    {
+      "revision": "1f995d5f7",
+      "render": [
+        "specific_render/from_1f995d5f7.json"
+      ]
+    }
+  ]
+}

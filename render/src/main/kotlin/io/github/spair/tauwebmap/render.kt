@@ -1,5 +1,6 @@
 package io.github.spair.tauwebmap
 
+import io.github.spair.byond.dme.Dme
 import io.github.spair.byond.dme.parser.DmeParser
 import io.github.spair.byond.dmm.Dmm
 import io.github.spair.byond.dmm.drawer.DmmDrawer
@@ -31,9 +32,20 @@ private val IGNORE_TYPES = arrayOf("/turf/space", "/area", "/obj/effect/landmark
 private val ZOOM_FACTORS = mapOf(3 to 8, 4 to 16, 5 to 32)
 private val SCALE_FACTORS = mapOf(3 to 0.3, 4 to 0.6, 5 to 1.0)
 
+private var CURRENT_REVISION = ""
+
 fun main() {
+    val revisionList = mutableListOf<String>()
+
     File(REVISIONS).forEachLine { line ->
-        val revision = line.split(" ")[1]
+        if (line.isNotBlank()) {
+            revisionList.add(line.split(" ")[1])
+        }
+    }
+
+    readConfigForRevisions(revisionList)
+
+    revisionList.forEach { revision ->
         ProcessBuilder("git", "checkout", revision).directory(File(REPO_PATH)).start().waitFor()
         renderRevision(revision)
     }
@@ -41,6 +53,7 @@ fun main() {
 
 private fun renderRevision(revision: String) {
     println("Generating images for $revision:")
+    CURRENT_REVISION = revision
     LAYERS.forEach { layer ->
         print("  - $layer...")
         renderLayer("data/maps/$revision/$layer", TYPES_TO_RENDER.getValue(layer))
@@ -57,10 +70,8 @@ private fun renderLayer(layerFolderPath: String, typesToUse: Array<String>) {
     }
 }
 
-internal class Resource
 private fun generateMapImage(typesToUse: Array<String>): BufferedImage {
-    val dme = DmeParser.parse(File(DME_PATH))
-    dme.mergeWithJson(Resource::class.java.classLoader.getResourceAsStream("render_config.json"))
+    val dme = DmeParser.parse(File(DME_PATH)).apply { mergeDmeWithConfigJsons(this) }
     val dmmData = DmmReader.readMap(File(DMM_PATH))
     val dmm = Dmm(dmmData, dme)
 
@@ -68,6 +79,12 @@ private fun generateMapImage(typesToUse: Array<String>): BufferedImage {
         DmmDrawer.drawMap(dmm, FilterMode.IGNORE, *IGNORE_TYPES)
     } else {
         DmmDrawer.drawMap(dmm, FilterMode.INCLUDE, *typesToUse)
+    }
+}
+
+private fun mergeDmeWithConfigJsons(dme: Dme) {
+    RENDER_CONFIG[CURRENT_REVISION]?.forEach { filePath ->
+        dme.mergeWithJson(readResource(filePath))
     }
 }
 

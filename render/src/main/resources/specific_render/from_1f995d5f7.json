@@ -1,0 +1,47 @@
+{
+  "definitions": [
+    {
+      "type": "/turf/simulated/floor",
+      "parent": "/turf/simulated",
+      "subtypes": [],
+      "vars": {
+        "plane": -1
+      }
+    },{
+      "type": "/obj/machinery/ai_slipper",
+      "parent": "/obj/machinery",
+      "subtypes": [],
+      "vars": {
+        "plane": -1
+      }
+    },{
+      "type": "/obj/machinery/hologram/holopad",
+      "parent": "/obj/machinery/hologram",
+      "subtypes": [],
+      "vars": {
+        "plane": -1
+      }
+    },{
+      "type": "/obj/machinery/igniter",
+      "parent": "/obj/machinery",
+      "subtypes": [],
+      "vars": {
+        "plane": -1
+      }
+    },{
+      "type": "/obj/structure/lattice",
+      "parent": "/obj/structure",
+      "subtypes": [],
+      "vars": {
+        "plane": -1
+      }
+    },{
+      "type": "/obj/structure/alien/weeds",
+      "parent": "/obj/structure/alien",
+      "subtypes": [],
+      "vars": {
+        "plane": -1
+      }
+    }
+  ]
+}
