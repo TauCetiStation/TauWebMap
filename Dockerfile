@@ -1,7 +1,7 @@
 FROM openjdk:8-jdk-alpine as build
 WORKDIR /build
 COPY . .
-RUN ./gradlew cleanProject build
+RUN chmod +x gradlew && chmod +x gradle/wrapper/gradle-wrapper.jar && ./gradlew cleanProject build
 
 FROM openjdk:8-jre-alpine as render
 WORKDIR /render
@@ -9,6 +9,7 @@ WORKDIR /render
 COPY --from=build /build/render/build/libs/render.jar .
 COPY .revisions .
 COPY render/src/main/compress.sh .
+RUN chmod +x compress.sh
 
 RUN apk update && \
 apk add git pngquant && \
