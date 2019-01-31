@@ -3,13 +3,51 @@
     {
       "revision": "887f80dff",
       "render": [
-        "common_render.json"
+        "renders/common_render.json"
+      ],
+      "script": [
+        "scripts/posters_amount.glob.groovy",
+        "scripts/color_window.glob.groovy",
+        "scripts/random_tools_icons.glob.groovy",
+        "scripts/adjust_window_color.var.groovy",
+        "scripts/airlock_overlay.img.groovy",
+        "scripts/color_window.var.groovy",
+        "scripts/handle_random_tool_color.var.groovy",
+        "scripts/handle_random_tool_supply.var.groovy",
+        "scripts/hide_content_in_closet.var.groovy",
+        "scripts/init_posters.var.groovy",
+        "scripts/smooth_carpet.var.groovy",
+        "scripts/smooth_wall.var.groovy",
+        "scripts/smooth_window.var.groovy"
       ]
     },
     {
       "revision": "1f995d5f7",
       "render": [
-        "specific_render/from_1f995d5f7.json"
+        "renders/equal_more_1f995d5f7.json"
+      ]
+    },
+    {
+      "revision": "82304ea90",
+      "script": [
+        "scripts/equal_more_82304ea90/handle_random_flora.var.groovy"
+      ]
+    },
+    {
+      "revision": "0bc341bb0",
+      "script": [
+        "scripts/equal_more_0bc341bb0/adjust_cleanable_blood_color.var.groovy",
+        "scripts/equal_more_0bc341bb0/smooth_table.var.groovy",
+        "scripts/equal_more_0bc341bb0/smooth_carpet.var.groovy"
+      ]
+    }
+  ],
+  "==": [
+    {
+      "revision": "887f80dff",
+      "script": [
+        "scripts/equal_887f80dff/smooth_table.var.groovy",
+        "scripts/equal_887f80dff/smooth_carpet.var.groovy"
       ]
     }
   ]

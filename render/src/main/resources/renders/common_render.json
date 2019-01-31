@@ -1,0 +1,61 @@
+{
+  "definitions": [
+    {
+      "type": "/turf/simulated/floor/plating",
+      "vars": {
+        "layer": 1.98
+      }
+    },
+    {
+      "type": "/obj/machinery/navbeacon",
+      "vars": {
+        "layer": 1.988
+      }
+    },
+    {
+      "type": "/obj/structure/disposalpipe",
+      "vars": {
+        "layer": 1.99
+      }
+    },
+    {
+      "type": "/obj/machinery/atmospherics/pipe/simple/hidden",
+      "vars": {
+        "layer": 1.999,
+        "alpha": 255
+      }
+    },
+    {
+      "type": "/obj/machinery/atmospherics/pipe/manifold/hidden",
+      "vars": {
+        "layer": 1.999,
+        "alpha": 255
+      }
+    },
+    {
+      "type": "/obj/machinery/atmospherics/pipe/manifold4w/hidden",
+      "vars": {
+        "layer": 1.999,
+        "alpha": 255
+      }
+    },
+    {
+      "type": "/obj/structure/cable",
+      "vars": {
+        "layer": 1.9999
+      }
+    },
+    {
+      "type": "/obj/machinery/atmospherics/components/unary/vent_scrubber/on",
+      "vars": {
+        "icon_state": "{text}on"
+      }
+    },
+    {
+      "type": "/obj/machinery/atmospherics/components/unary/vent_pump/on",
+      "vars": {
+        "icon_state": "{text}out"
+      }
+    }
+  ]
+}

@@ -76,7 +76,7 @@ private fun generateMapImage(typesToUse: Array<String>): BufferedImage {
     val dmm = Dmm(dmmData, dme)
 
     return if (typesToUse.isEmpty()) {
-        DmmDrawer.drawMap(dmm, FilterMode.IGNORE, *IGNORE_TYPES)
+        DmmDrawer.drawMap(dmm, SCRIPT_CONFIG[CURRENT_REVISION], FilterMode.IGNORE, *IGNORE_TYPES)
     } else {
         DmmDrawer.drawMap(dmm, FilterMode.INCLUDE, *typesToUse)
     }
