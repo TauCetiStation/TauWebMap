@@ -25,6 +25,10 @@ L.control.attribution({
     position: 'bottomright',
     prefix: '<a href="https://taucetistation.org/">TauCeti</a>'
 }).addAttribution('Made with ♥').addTo(map);
+L.control.attribution({
+    position: 'bottomleft',
+    prefix: ''
+}).addAttribution('<b><a href="https://collage.taucetistation.org/#2017" target="_blank">Collage</a></b> | <b><a href="https://map-archive.taucetistation.org/#2017" target="_blank">Archive</a></b>').addTo(map);
 
 let stations = {};
 let overlays = {};
