@@ -1,5 +1,5 @@
 group = "io.github.spair"
-version = "1.3"
+version = "1.3.1"
 
 plugins {
     `build-scan`
