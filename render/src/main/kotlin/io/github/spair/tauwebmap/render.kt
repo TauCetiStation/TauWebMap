@@ -84,7 +84,7 @@ private fun generateMapImage(typesToUse: Array<String>): BufferedImage {
 
 private fun mergeDmeWithConfigJsons(dme: Dme) {
     RENDER_CONFIG[CURRENT_REVISION]?.forEach { filePath ->
-        dme.mergeWithJson(readResource(filePath))
+        dme.mergeWithJson(File(filePath))
     }
 }
 

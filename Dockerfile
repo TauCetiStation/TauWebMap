@@ -8,7 +8,7 @@ WORKDIR /render
 
 COPY --from=build /build/render/build/libs/render.jar .
 COPY .revisions .
-COPY render/src/main/compress.sh .
+COPY render/src/main/util .
 
 RUN apk update && \
 apk add git pngquant && \

@@ -17,7 +17,7 @@ val RENDER_CONFIG = mutableMapOf<String, MutableList<String>>()
 val SCRIPT_CONFIG = mutableMapOf<String, MutableList<File>>()
 
 fun readConfigForRevisions(revisionList: List<String>) {
-    val configJson = Json.parse(readResource(CONFIG_FILE)).asObject()
+    val configJson = Json.parse(File(CONFIG_FILE).reader()).asObject()
 
     configJson.entryForEach(MORE_EQUAL_ENTRY) { config ->
         for (revision in revisionList) {
@@ -86,7 +86,7 @@ private fun addToScriptConfig(revision: String, config: JsonObject) {
     SCRIPT_CONFIG.getOrPut(revision) { mutableListOf() }.let { list ->
         config.getScript()?.forEach { scriptFileName ->
             try {
-                list.add(resourceFile(scriptFileName.asString()))
+                list.add(File(scriptFileName.asString()))
             } catch (e: Exception) {
                 println("exception with $scriptFileName")
                 throw e
@@ -114,7 +114,3 @@ private fun JsonObject.excluded(revision: String): Boolean {
     }
     return false
 }
-
-internal class Resource
-fun readResource(path: String) = Resource::class.java.classLoader.getResource(path).readText()
-fun resourceFile(path: String) = File(Resource::class.java.classLoader.getResource(path).file)
