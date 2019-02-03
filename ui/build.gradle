@@ -7,7 +7,7 @@ minifyJs {
     source = fileTree 'src/main/ui/script.js'
     dest = file 'src/main/dist/webroot/static/script.min.js'
     closure {
-        compilerOptions.languageIn = 'ECMASCRIPT6_STRICT'
+        compilerOptions.languageIn = 'ECMASCRIPT6'
         compilerOptions.languageOut = 'ECMASCRIPT5_STRICT'
     }
 }
