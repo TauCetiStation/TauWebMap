@@ -34,7 +34,7 @@ private val SCALE_FACTORS = mapOf(3 to 0.3, 4 to 0.6, 5 to 1.0)
 
 private var CURRENT_REVISION = ""
 
-fun main() {
+fun main(args: Array<String>) {
     val revisionList = mutableListOf<String>()
 
     File(REVISIONS).forEachLine { line ->
@@ -43,7 +43,7 @@ fun main() {
         }
     }
 
-    readConfigForRevisions(revisionList)
+    readConfigForRevisions(revisionList, args.isNotEmpty() && args[0] == "-d")
 
     revisionList.forEach { revision ->
         ProcessBuilder("git", "checkout", revision).directory(File(REPO_PATH)).start().waitFor()

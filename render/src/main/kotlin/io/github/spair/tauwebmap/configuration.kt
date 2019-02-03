@@ -16,8 +16,12 @@ private const val LESS_EQUAL_ENTRY = "<="
 val RENDER_CONFIG = mutableMapOf<String, MutableList<String>>()
 val SCRIPT_CONFIG = mutableMapOf<String, MutableList<File>>()
 
-fun readConfigForRevisions(revisionList: List<String>) {
-    val configJson = Json.parse(File(CONFIG_FILE).reader()).asObject()
+private var UTIL_PATH: String = "./"
+
+fun readConfigForRevisions(revisionList: List<String>, devMode: Boolean) {
+    if (devMode) UTIL_PATH = "./render/src/main/util/"
+
+    val configJson = Json.parse(File(UTIL_PATH + CONFIG_FILE).reader()).asObject()
 
     configJson.entryForEach(MORE_EQUAL_ENTRY) { config ->
         for (revision in revisionList) {
@@ -71,7 +75,7 @@ private fun addToRenderConfig(revision: String, config: JsonObject) {
     RENDER_CONFIG.getOrPut(revision) { mutableListOf() }.let { list ->
         config.getRender()?.forEach { renderFileName ->
             try {
-                list.add(renderFileName.asString())
+                list.add(UTIL_PATH + renderFileName.asString())
             } catch (e: Exception) {
                 println("exception with $renderFileName")
                 throw e
@@ -86,7 +90,7 @@ private fun addToScriptConfig(revision: String, config: JsonObject) {
     SCRIPT_CONFIG.getOrPut(revision) { mutableListOf() }.let { list ->
         config.getScript()?.forEach { scriptFileName ->
             try {
-                list.add(File(scriptFileName.asString()))
+                list.add(File(UTIL_PATH + scriptFileName.asString()))
             } catch (e: Exception) {
                 println("exception with $scriptFileName")
                 throw e
