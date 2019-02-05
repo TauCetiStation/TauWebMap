@@ -21,7 +21,7 @@ private const val DMM_PATH = "$REPO_PATH/maps/z1.dmm"
 private val LAYERS = arrayOf("tiles", "pipes", "power", "dispo")
 private val TYPES_TO_RENDER = mapOf(
     "tiles" to arrayOf(), // All types except of IGNORE_TYPES.
-    "pipes" to arrayOf("/obj/machinery/atmospherics/pipe"),
+    "pipes" to arrayOf("/obj/machinery/atmospherics/pipe", "/obj/machinery/atmospherics/components/unary/vent_pump", "/obj/machinery/atmospherics/components/unary/vent_scrubber"),
     "power" to arrayOf("/obj/structure/cable"),
     "dispo" to arrayOf("/obj/structure/disposalpipe")
 )
