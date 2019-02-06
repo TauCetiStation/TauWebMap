@@ -16,7 +16,6 @@
         "scripts/handle_random_tool_supply.var.groovy",
         "scripts/hide_content_in_closet.var.groovy",
         "scripts/init_posters.var.groovy",
-        "scripts/smooth_carpet.var.groovy",
         "scripts/smooth_wall.var.groovy",
         "scripts/smooth_window.var.groovy"
       ]
