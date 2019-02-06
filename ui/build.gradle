@@ -40,7 +40,7 @@ task copyIndex(type: Copy) {
             it.replace('@{version}', "${rootProject.version}-build:$currentTimeStamp")
         }
         filter {
-            it.replace('@{revisions}', file("../.revisions").text.trim().replaceAll('\\r\\n|\\r|\\n', ','))
+            it.replace('@{revisions}', file("../.revisions").text.trim().replaceAll(/\r\n|\r|\n/, ','))
         }
         filter {
             it.replace('@{style}', file('src/main/dist/style.min.css').text)
