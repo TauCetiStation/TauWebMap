@@ -1,0 +1,46 @@
+{
+  "definitions": [
+    {
+      "type": "/obj/machinery/atmospherics/pipe/simple/hidden/supply",
+      "vars": {
+        "layer": 1.999,
+        "alpha": 255
+      }
+    },
+    {
+      "type": "/obj/machinery/atmospherics/pipe/simple/hidden/scrubbers",
+      "vars": {
+        "layer": 1.999,
+        "alpha": 255
+      }
+    },
+    {
+      "type": "/obj/machinery/atmospherics/pipe/manifold/hidden/supply",
+      "vars": {
+        "layer": 1.999,
+        "alpha": 255
+      }
+    },
+    {
+      "type": "/obj/machinery/atmospherics/pipe/manifold/hidden/scrubbers",
+      "vars": {
+        "layer": 1.999,
+        "alpha": 255
+      }
+    },
+    {
+      "type": "/obj/machinery/atmospherics/pipe/manifold4w/hidden/supply",
+      "vars": {
+        "layer": 1.999,
+        "alpha": 255
+      }
+    },
+    {
+      "type": "/obj/machinery/atmospherics/pipe/manifold4w/hidden/scrubbers",
+      "vars": {
+        "layer": 1.999,
+        "alpha": 255
+      }
+    }
+  ]
+}
