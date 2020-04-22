@@ -16,7 +16,7 @@ private const val REVISIONS = ".revisions"
 
 private const val REPO_PATH = "tmp/repo"
 private const val DME_PATH = "$REPO_PATH/taucetistation.dme"
-private const val DMM_PATH = "$REPO_PATH/maps/z1.dmm"
+private const val DMM_PATH = "$REPO_PATH/maps/boxstation/boxstation.dmm"
 
 private val LAYERS = arrayOf("tiles", "pipes", "power", "dispo")
 private val TYPES_TO_RENDER = mapOf(
