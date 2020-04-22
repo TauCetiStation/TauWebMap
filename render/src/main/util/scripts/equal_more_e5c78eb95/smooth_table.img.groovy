@@ -1,5 +1,4 @@
 package scripts.equal_more_e5c78eb95
-
 import static java.lang.Math.abs
 
 if (!src.isType('/obj/structure/table'))
@@ -18,15 +17,16 @@ def line_v
 def line_h
 def center_4
 def cropped
-def buffer
+def source_sprite
 
 basesprite = getCachedDmi(src.icon).getSprite('box')
 line_v = getCachedDmi(src.icon).getSprite('line_v')
 line_h = getCachedDmi(src.icon).getSprite('line_h')
 center_4 = getCachedDmi(src.icon).getSprite('center_4')
+source_sprite = getCachedDmi(src.icon).getSprite(src.icon_state)
 
-int sourceIconWidth = basesprite.getWidth()
-int sourceIconHeight = basesprite.getHeight()
+int sourceIconWidth = source_sprite.getWidth()
+int sourceIconHeight = source_sprite.getHeight()
 	
 int sourceIconWidthHalf = sourceIconWidth / 2
 int sourceIconHeightHalf = sourceIconHeight / 2

@@ -72,7 +72,7 @@ private fun renderLayer(layerFolderPath: String, typesToUse: Array<String>) {
 
 private fun generateMapImage(typesToUse: Array<String>): BufferedImage {
     val dme = DmeParser.parse(File(DME_PATH)).apply { mergeDmeWithConfigJsons(this) }
-    val dmmData = DmmReader.readMap(File(DMM_PATH))
+    val dmmData = DmmReader.readMap(File(if (CURRENT_REVISION == "9f7722111") "$REPO_PATH/maps/boxstation/boxstation.dmm" else "$REPO_PATH/maps/z1.dmm"))
     val dmm = Dmm(dmmData, dme)
 
     return if (typesToUse.isEmpty()) {
