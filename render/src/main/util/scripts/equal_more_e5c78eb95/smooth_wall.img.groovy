@@ -1,4 +1,5 @@
 package scripts.equal_more_e5c78eb95
+
 import static java.lang.Math.abs
 
 if (!src.isType('/turf/simulated/wall'))
