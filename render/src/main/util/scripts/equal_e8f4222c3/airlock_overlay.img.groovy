@@ -1,5 +1,3 @@
-package scripts.equal_more_e5c78eb95
-
 if (!src.isType('/obj/machinery/door/airlock'))
     return sprite
 

@@ -39,21 +39,6 @@
         "scripts/equal_more_0bc341bb0/smooth_table.var.groovy",
         "scripts/equal_more_0bc341bb0/smooth_carpet.var.groovy"
       ]
-    },
-    {
-      "revision": "e5c78eb95",
-      "render": [
-        "renders/equal_more_e5c78eb95.json"
-      ],
-      "script": [
-        "scripts/equal_more_e5c78eb95/smooth_wall.img.groovy",
-        "scripts/equal_more_e5c78eb95/smooth_table.img.groovy",
-        "scripts/equal_more_e5c78eb95/smooth_wall.var.groovy",
-        "scripts/equal_more_e5c78eb95/smooth_table.var.groovy",
-		"scripts/equal_more_e5c78eb95/airlock_overlay.img.groovy",
-		"scripts/equal_more_e5c78eb95/smooth_window.var.groovy",
-		"scripts/equal_more_e5c78eb95/color_window.glob.groovy"
-      ]
     }
   ],
   "==": [
@@ -62,6 +47,21 @@
       "script": [
         "scripts/equal_887f80dff/smooth_table.var.groovy",
         "scripts/equal_887f80dff/smooth_carpet.var.groovy"
+      ]
+    },
+    {
+      "revision": "e8f4222c3",
+      "render": [
+        "renders/equal_e8f4222c3.json"
+      ],
+      "script": [
+        "scripts/equal_e8f4222c3/smooth_wall.img.groovy",
+        "scripts/equal_e8f4222c3/smooth_table.img.groovy",
+        "scripts/equal_e8f4222c3/smooth_wall.var.groovy",
+        "scripts/equal_e8f4222c3/smooth_table.var.groovy",
+		"scripts/equal_e8f4222c3/airlock_overlay.img.groovy",
+		"scripts/equal_e8f4222c3/smooth_window.var.groovy",
+		"scripts/equal_e8f4222c3/color_window.glob.groovy"
       ]
     }
   ]

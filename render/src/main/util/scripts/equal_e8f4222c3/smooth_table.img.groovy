@@ -1,17 +1,13 @@
-package scripts.equal_more_e5c78eb95
-
 import static java.lang.Math.abs
 
-if (!src.isType('/turf/simulated/wall'))
+if (!src.isType('/obj/structure/table'))
     return sprite
 
 int junction = 0
 
-oRange(src, 1).eachForTypeOnly('/turf/simulated/wall') { W ->
+oRange(src, 1).eachForTypeOnly('/obj/structure/table') { W ->
     if (abs(src.x - W.x) - abs(src.y - W.y)) {
-        if (src.mineral == W.mineral) {
-            junction |= getDir(src, W)
-        }
+        junction |= getDir(src, W)
     }
 }
 
@@ -160,5 +156,4 @@ if (basesprite) {
 			}
         }
 }
-
 return sprite

@@ -1,5 +1,3 @@
-package scripts.equal_more_e5c78eb95
-
 import static java.lang.Math.abs
 import io.github.spair.byond.dmm.TileItem
 

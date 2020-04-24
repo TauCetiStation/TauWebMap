@@ -1,5 +1,3 @@
-package scripts.equal_more_e5c78eb95
-
 def wcRed = pick(['#aa0808', '#990707', '#e50909', '#e50909'])
 def wcBar = pick(['#0d8395', '#58b5c3', '#58c366', '#90d79a', '#3399ff', '#00ffff', '#ff6600', '#ffffff'])
 def wcPurple = pick(['#ba62b1', '#Ba3fad', '#a54f9e', '#b549d1'])
