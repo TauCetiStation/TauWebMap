@@ -1,17 +1,13 @@
-package scripts.equal_more_e5c78eb95
-
 import static java.lang.Math.abs
 
-if (!src.isType('/turf/simulated/wall'))
+if (!src.isType('/obj/structure/table'))
     return sprite
 
 int junction = 0
 
-oRange(src, 1).eachForTypeOnly('/turf/simulated/wall') { W ->
+oRange(src, 1).eachForTypeOnly('/obj/structure/table') { W ->
     if (abs(src.x - W.x) - abs(src.y - W.y)) {
-        if (src.mineral == W.mineral) {
-            junction |= getDir(src, W)
-        }
+        junction |= getDir(src, W)
     }
 }
 
@@ -20,14 +16,16 @@ def line_v
 def line_h
 def center_4
 def cropped
+def source_sprite
 
 basesprite = getCachedDmi(src.icon).getSprite('box')
 line_v = getCachedDmi(src.icon).getSprite('line_v')
 line_h = getCachedDmi(src.icon).getSprite('line_h')
 center_4 = getCachedDmi(src.icon).getSprite('center_4')
+source_sprite = getCachedDmi(src.icon).getSprite(src.icon_state)
 
-int sourceIconWidth = basesprite.getWidth()
-int sourceIconHeight = basesprite.getHeight()
+int sourceIconWidth = source_sprite.getWidth()
+int sourceIconHeight = source_sprite.getHeight()
 	
 int sourceIconWidthHalf = sourceIconWidth / 2
 int sourceIconHeightHalf = sourceIconHeight / 2
@@ -158,5 +156,4 @@ if (basesprite) {
 			}
         }
 }
-
 return sprite
